@@ -1,0 +1,9 @@
+# Copyright (c) 2024 CATIE
+# SPDX-License-Identifier: Apache-2.0
+
+menuconfig LD19
+    bool "LDROBOT LD19 lidar sensor"
+    default y
+    depends on DT_HAS_LDROBOT_LD19_ENABLED
+    help
+      Enable driver for LDROBOT LD19 lidar sensor.

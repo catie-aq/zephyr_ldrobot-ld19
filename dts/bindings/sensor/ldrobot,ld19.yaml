@@ -1,0 +1,9 @@
+# Copyright (c) 2024 CATIE
+# SPDX-License-Identifier: Apache-2.0
+
+description: |
+    LDROBOT Co. ld19 lidar sensor.
+
+compatible: "ldrobot,ld19"
+
+include: [sensor-device.yaml]
