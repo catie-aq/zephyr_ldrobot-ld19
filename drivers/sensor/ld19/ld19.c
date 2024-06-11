@@ -67,6 +67,24 @@ struct ld19_buf {
 	uint8_t index;
 };
 
+typedef struct __attribute__((packed)) {
+  uint16_t distance;
+  uint8_t intensity;
+} LidarPointStructType;
+
+typedef struct __attribute__((packed)) {
+  uint8_t header;
+  uint8_t ver_len;
+  uint16_t speed;
+  uint16_t start_angle;
+  LidarPointStructType point[12];
+  uint16_t end_angle;
+  uint16_t timestamp;
+  uint8_t crc8;
+} LiDARMeasureDataType;
+
+static LiDARMeasureDataType ld19_data;
+
 struct ld19_data {
 	struct ld19_buf rx_buf;
 	enum ld19_state state;
@@ -128,6 +146,10 @@ static void ld19_uart_callback_handler(const struct device *dev, void *user_data
 			data->rx_buf.buf[data->rx_buf.index++] = c;
 			if (data->rx_buf.index >= LD19_DATA_LEN) {
 				uint8_t crc = ld19_crc8(data->rx_buf.buf, LD19_DATA_LEN - 1);
+				if (crc == data->rx_buf.buf[LD19_DATA_LEN - 1]) {
+					memcpy((uint8_t*)&ld19_data, data->rx_buf.buf, LD19_DATA_LEN);
+				}
+
 				data->state = HEADER;
 			}
 			break;
@@ -171,9 +193,24 @@ static int ld19_channel_get(const struct device *dev, enum sensor_channel chan,
 {
 	struct ld19_data *data = dev->data;
 
-	// TODO: Update val with the sensor value
-	val->val1 = 0;
-	val->val2 = 0;
+	switch (chan) {
+	case SENSOR_CHAN_DISTANCE:
+		val->val1 = ld19_data.speed;
+		val->val2 = ld19_data.timestamp;
+		val++;
+		val->val1 = ld19_data.start_angle;
+		val->val2 = ld19_data.end_angle;
+		val++;
+		for (int i = 0; i < 12; i++) {
+			val->val1 = ld19_data.point[i].distance;
+			val->val2 = ld19_data.point[i].intensity;
+			val++;
+		}
+		break;
+	default:
+		return -ENOTSUP;
+		break;
+	}
 
 	return 0;
 }
