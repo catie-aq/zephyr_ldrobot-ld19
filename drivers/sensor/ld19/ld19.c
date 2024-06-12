@@ -60,8 +60,10 @@ enum ld19_state {
 
 struct ld19_config {
 	const struct device *uart_dev;
+#ifdef CONFIG_LD19_TRIGGER
 	sensor_trigger_handler_t handler;
 	const struct sensor_trigger *trig;
+#endif
 };
 
 struct ld19_buf {
@@ -151,7 +153,9 @@ static void ld19_uart_callback_handler(const struct device *dev, void *user_data
 				uint8_t crc = ld19_crc8(data->rx_buf.buf, LD19_DATA_LEN - 1);
 				if (crc == data->rx_buf.buf[LD19_DATA_LEN - 1]) {
 					memcpy((uint8_t*)&ld19_data, data->rx_buf.buf, LD19_DATA_LEN);
+#ifdef CONFIG_LD19_TRIGGER
 					config->handler(dev, config->trig);
+#endif
 				}
 
 				data->state = HEADER;
@@ -236,7 +240,9 @@ static const struct sensor_driver_api ld19_driver_api = {
 	.attr_set = ld19_attr_set,
 	.sample_fetch = ld19_sample_fetch,
 	.channel_get = ld19_channel_get,
+#ifdef CONFIG_LD19_TRIGGER
 	.trigger_set = ld19_trigger_set,
+#endif
 };
 
 static void ld19_uart_flush(const struct device *dev)
