@@ -7,7 +7,7 @@ menuconfig LD19
 	depends on DT_HAS_LDROBOT_LD19_ENABLED
 	help
 	  Enable driver for LDROBOT LD19 lidar sensor.
-	
+
 choice
 	prompt "Trigger mode"
 	default LD19_TRIGGER_NONE
