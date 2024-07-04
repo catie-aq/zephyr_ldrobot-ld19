@@ -219,6 +219,7 @@ static int ld19_channel_get(const struct device *dev, enum sensor_channel chan,
 	return 0;
 }
 
+#ifdef CONFIG_LD19_TRIGGER
 int ld19_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
 		     sensor_trigger_handler_t handler)
 {
@@ -230,6 +231,7 @@ int ld19_trigger_set(const struct device *dev, const struct sensor_trigger *trig
 
 	return 0;
 }
+#endif
 
 static const struct sensor_driver_api ld19_driver_api = {
 	.attr_set = ld19_attr_set,
