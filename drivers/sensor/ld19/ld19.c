@@ -149,7 +149,9 @@ static void ld19_uart_callback_handler(const struct device *dev, void *user_data
 					memcpy((uint8_t *)&ld19_data, data->rx_buf.buf,
 					       LD19_DATA_LEN);
 #ifdef CONFIG_LD19_TRIGGER
-					config->handler(dev, config->trig);
+					if (config->handler) {
+						config->handler(dev, config->trig);
+					}
 #endif
 				}
 
