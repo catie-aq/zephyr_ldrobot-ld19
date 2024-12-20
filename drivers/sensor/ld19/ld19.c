@@ -188,17 +188,12 @@ static int ld19_attr_set(const struct device *dev, enum sensor_channel chan,
 
 static int ld19_sample_fetch(const struct device *dev, enum sensor_channel chan)
 {
-	struct ld19_data *data = dev->data;
-	const struct ld19_config *config = dev->config;
-
 	return 0;
 }
 
 static int ld19_channel_get(const struct device *dev, enum sensor_channel chan,
 			    struct sensor_value *val)
 {
-	struct ld19_data *data = dev->data;
-
 	switch (chan) {
 	case SENSOR_CHAN_DISTANCE:
 		val->val1 = ld19_data.speed;
@@ -225,8 +220,7 @@ static int ld19_channel_get(const struct device *dev, enum sensor_channel chan,
 int ld19_trigger_set(const struct device *dev, const struct sensor_trigger *trig,
 		     sensor_trigger_handler_t handler)
 {
-	struct ld19_data *data = dev->data;
-	struct ld19_config *config = dev->config;
+	struct ld19_config *config = (struct ld19_config *)dev->config;
 
 	config->handler = handler;
 	config->trig = trig;
@@ -256,7 +250,6 @@ static void ld19_uart_flush(const struct device *dev)
 static int ld19_init(const struct device *dev)
 {
 	const struct ld19_config *config = dev->config;
-	struct ld19_data *data = dev->data;
 
 	if (!device_is_ready(config->uart_dev)) {
 		LOG_ERR("UART device %s is not ready", config->uart_dev->name);
@@ -265,7 +258,7 @@ static int ld19_init(const struct device *dev)
 
 	ld19_uart_flush(config->uart_dev);
 
-	uart_irq_callback_user_data_set(config->uart_dev, ld19_uart_callback_handler, dev);
+	uart_irq_callback_user_data_set(config->uart_dev, ld19_uart_callback_handler, (void *)dev);
 
 	uart_irq_rx_enable(config->uart_dev);
 
