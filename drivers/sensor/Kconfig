@@ -3,6 +3,6 @@
 
 if SENSOR
 
-rsource "ld19/Kconfig"
+rsource "ldrobot/Kconfig"
 
 endif # SENSOR
