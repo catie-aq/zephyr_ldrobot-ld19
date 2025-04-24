@@ -1,0 +1,13 @@
+/*
+ * Copyright (c) 2025 CATIE
+ *
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+&sixtron_uart {
+	status = "okay";
+	current-speed = <230400>;
+  	lidar0: lidar_0 {
+		compatible = "ldrobot,ld19";
+	};
+};
