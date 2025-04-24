@@ -1,0 +1,8 @@
+sample:
+  name: LD19 Lidar sensor sample
+tests:
+  sample.default:
+    tags: lidar
+    integration_platforms:
+      - zest_core_stm32l4a6rg
+    depends_on: uart
