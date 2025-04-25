@@ -102,7 +102,7 @@ static uint8_t ld19_crc8(const uint8_t *data, uint8_t data_len)
 static void ld19_uart_callback_handler(const struct device *dev, void *user_data)
 {
 	struct ld19_data *data = ((struct device *)user_data)->data;
-	struct ld19_config *config = ((struct device *)user_data)->config;
+	const struct ld19_config *config = ((struct device *)user_data)->config;
 	int len = 0;
 	uint8_t c;
 
@@ -162,6 +162,7 @@ static void ld19_uart_callback_handler(const struct device *dev, void *user_data
 			data->rx_buf.buf[data->rx_buf.index++] = c;
 			if (data->rx_buf.index == LD19_DATA_HEALTH_LEN) {
 				uint8_t crc = ld19_crc8(data->rx_buf.buf, LD19_DATA_HEALTH_LEN - 1);
+				crc = 0; // unused for now
 				data->state = HEADER;
 			}
 			break;
@@ -170,6 +171,7 @@ static void ld19_uart_callback_handler(const struct device *dev, void *user_data
 			if (data->rx_buf.index == LD19_DATA_MANUFACTURE_LEN) {
 				uint8_t crc =
 					ld19_crc8(data->rx_buf.buf, LD19_DATA_MANUFACTURE_LEN - 1);
+				crc = 0; // unused for now
 				data->state = HEADER;
 			}
 			break;
