@@ -5,3 +5,4 @@ tests:
     tags: lidar
     integration_platforms:
       - zest_core_stm32l4a6rg
+    extra_args: "DTC_OVERLAY_FILE=sixtron_bus.overlay"
